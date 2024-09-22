@@ -1,0 +1,73 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+struct node { //Structure to hold info and pointer
+    char name [25]; //Character array to hold the name
+    int age; //Integer to hold the age
+    struct node *next; //Pointer to the next node
+} node_t;
+
+
+int main()
+{
+    FILE* filePointer = fopen("Homework6_Data.txt", "r");
+    char ch;
+    int i=0;
+    struct node* ptr[30]; //This limits number of listings to 30.
+    if (NULL == filePointer) {
+        printf("file can't be opened \n"); //Double checks to make sure character is still there
+    }
+    else{
+        printf("Unsorted list:\n");
+        while (!feof(filePointer)) { //Continue until end of file
+            //ch = fgetc(filePointer);
+            //printf("%c", ch);
+            ptr[i] = (struct node*)malloc(sizeof(struct node)); //Create memory for newest struct
+            fgets(ptr[i]->name,25,filePointer); //assign the string to ptr[i]->name
+            printf("%s",ptr[i]->name); //print the name into the list
+            if(i>=1){
+                ptr[i-1]->next=ptr[i];//assign this node to the previous node
+            }
+            i++; //increase so that we can assign the next string to the node
+            if(29<i){
+                break; //Makes sure that the string does not exceed the memory space for it.
+            }
+            
+        }
+        printf("\nSorted List:\n");
+        int first=0;
+        for(int rec=0;rec<i;rec++){
+            for(int j=0; j<=i;j++) { 
+                for(int k=j;k<i-1;k++){
+                    if(strcmp(ptr[first]->name,ptr[k]->name)>0){
+                        first=k; //determines the first item in the sort
+                    }
+                    //printf("%d, %d\n",k, first);
+                    if(strcmp(ptr[j]->next->name,ptr[k]->name)>0){ //find the smallest name in ASCI
+                        struct node *temp=ptr[j]->next; //Sort the nodes except just change the next node
+                        ptr[j]->next=ptr[k]->next;
+                        ptr[k]->next=temp;
+                    }
+                }
+            }
+        }
+        for(int j=1;j<i-1;j++){
+            if(strcmp(ptr[j]->name,ptr[0]->name)>0){
+                //printf("\n%s\n",ptr[j]->name);
+                ptr[0]->next=ptr[j]->next; //add the first item into the list at the appropriate response 
+                ptr[j]->next=ptr[0]; 
+                break;
+                
+            }
+        }
+        while(ptr[first]->next!=NULL){
+            printf("%s",ptr[first]->name); //print the next item until next is null.
+            *ptr[first]=*(ptr[first]->next);
+        }
+    fclose(filePointer); //close the file
+    }
+
+    return 0;
+}
